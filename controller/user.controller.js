@@ -27,12 +27,14 @@ exports.registerUser = (req, res) => {
 
 exports.loginUser = (req, res) => {
   const { name, password, email } = req.body
-
+  
   if (!name && !password && !email) return res.status(400).send("Please fill all the details")
-
+  
   const existingUser = users.find((user) => user.email === email)
   if (!existingUser) return res.status(401).send("Invaild credentials")
-
+  
+  if (existingUser.password !== password) return res.status(401).send("Incorrect Password")
+  
   const token = jwt.sign({
     user: existingUser.id
   }, secretKey, { expiresIn: "1h" })
