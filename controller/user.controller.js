@@ -17,9 +17,11 @@ exports.registerUser = (req, res) => {
 
   const existingUser = users.find((user) => user.email === email)
   if (existingUser) return res.status(409).send(`${name}, already resgistered, try logging in`)
+
   users.push({
     id: users.length + 1, name, password, email
   })
+  
   return res.status(201).send(`${name}, registeration sucessfull`)
 }
 
@@ -30,8 +32,10 @@ exports.loginUser = (req, res) => {
 
   const existingUser = users.find((user) => user.email === email)
   if (!existingUser) return res.status(401).send("Invaild credentials")
+
   const token = jwt.sign({
-    data: existingUser.id
+    user: existingUser.id
   }, secretKey, { expiresIn: "1h" })
+
   return res.status(201).send(token)
 }
